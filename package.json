@@ -1,0 +1,42 @@
+{
+  "name": "@dtsgenerator/create",
+  "version": "0.1.0",
+  "description": "This repository is the create command for dtsgenerator plugin.",
+  "main": "./bin/create",
+  "scripts": {
+    "lint": "eslint src/*.ts",
+    "lint:fix": "npm run lint -- --fix",
+    "precompile": "npm run lint",
+    "compile": "tsc -p .",
+    "watch": "npm run compile -- -w",
+    "build": "npm run compile",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dtsgenerator/create.git"
+  },
+  "keywords": [
+    "dtsgenerator"
+  ],
+  "author": "horiuchi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dtsgenerator/create/issues"
+  },
+  "homepage": "https://github.com/dtsgenerator/create#readme",
+  "dependencies": {
+    "commander": "^5.1.0",
+    "tslib": "^1.11.1"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.4",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "prettier": "^2.0.5",
+    "typescript": "^3.8.3"
+  }
+}
