@@ -171,6 +171,9 @@ async function main(): Promise<void> {
         await installDependencies(targetDir);
 
         console.log('Finish to create project.');
+        console.log(
+            `  Please open and edit ${path.relative('.', targetDir)}/index.ts.`
+        );
     } catch (reason) {
         console.log();
         if (reason.command) {
