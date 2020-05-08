@@ -1,5 +1,6 @@
 import commander from 'commander';
 import fs from 'fs-extra';
+import mustache from 'mustache';
 import path from 'path';
 import validate from 'validate-npm-package-name';
 import spawn from 'cross-spawn';
@@ -67,11 +68,30 @@ function checkTargetDirectory(name: string): string {
     console.log(`  The directory (${basename}) is created.`);
     return d;
 }
-function copyTemplateFiles(targetDir: string): void {
-    fs.copySync(path.resolve('../template/'), targetDir);
+async function copyTemplateFiles(
+    projectName: string,
+    targetDir: string
+): Promise<void> {
+    await fs.copy(path.resolve('../template/'), targetDir);
+
+    const view = { projectName };
+    const ext = '.mustache';
+    const files = (await fs.readdir(targetDir)).filter((f) => f.endsWith(ext));
+    for (const file of files) {
+        const p = path.join(targetDir, file);
+        const template = await fs.readFile(p, 'utf-8');
+        const content = mustache.render(template, view);
+        const outputPath = p.substr(0, p.length - ext.length);
+        await fs.writeFile(outputPath, content, 'utf-8');
+        await fs.unlink(p);
+    }
+
     console.log('  Finish to copy files.');
 }
-function createPackageJson(name: string, targetDir: string): void {
+async function createPackageJson(
+    name: string,
+    targetDir: string
+): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const json: any = {
         name,
@@ -98,7 +118,9 @@ function createPackageJson(name: string, targetDir: string): void {
             access: 'public',
         };
     }
-    fs.writeJsonSync(path.join(targetDir, 'package.json'), json, { spaces: 2 });
+    await fs.writeJson(path.join(targetDir, 'package.json'), json, {
+        spaces: 2,
+    });
 }
 function callCommand(command: string, args: string[]): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -166,8 +188,8 @@ async function main(): Promise<void> {
         console.log('Start to create project: ' + projectName);
 
         const targetDir = checkTargetDirectory(projectName);
-        copyTemplateFiles(targetDir);
-        createPackageJson(projectName, targetDir);
+        await copyTemplateFiles(projectName, targetDir);
+        await createPackageJson(projectName, targetDir);
         await installDependencies(targetDir);
 
         console.log('Finish to create project.');
