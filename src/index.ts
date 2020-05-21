@@ -72,7 +72,10 @@ async function copyTemplateFiles(
     projectName: string,
     targetDir: string
 ): Promise<void> {
-    await fs.copy(path.resolve('../template/'), targetDir);
+    await fs.copy(
+        path.resolve(path.join(__dirname, '../template/')),
+        targetDir
+    );
 
     const view = { projectName };
     const ext = '.mustache';
@@ -96,7 +99,7 @@ async function createPackageJson(
     const json: any = {
         name,
         version: '0.1.0',
-        description: 'Please change this description!!!',
+        description: 'PLEASE CHANGE THIS DESCRIPTION!!!',
         main: 'index.js',
         scripts: {
             lint: 'eslint *.ts **/*.ts',

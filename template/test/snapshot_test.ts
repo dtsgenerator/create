@@ -48,7 +48,7 @@ describe('PreProcess Snapshot testing', () => {
                 }
 
                 const result = handler(input);
-                const actual = JSON.stringify(result, null, 4);
+                const actual = JSON.stringify(result, null, 2);
 
                 // When we do `UPDATE_SNAPSHOT=1 npm test`, update snapshot data.
                 if (process.env.UPDATE_SNAPSHOT) {
