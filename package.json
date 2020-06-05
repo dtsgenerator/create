@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "This repository is the create command for dtsgenerator plugin.",
   "main": "./bin/create.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "lint": "eslint src/*.ts",
     "lint:fix": "npm run lint -- --fix",

@@ -1,3 +1,5 @@
+!template/**/*.*
+
 .git/
 .vscode/
 
@@ -5,20 +7,17 @@
 node_modules/
 
 # codes
-test/
+/test/
 example/*/node_modules/
 
 # misc
-.coveralls.yml
-.editorconfig
-.gitignore
-.travis.yml
-.nyc_output/
+/.coveralls.yml
+/.editorconfig
+/.gitignore
+/.travis.yml
+/.nyc_output/
 build/
 coverage/
-demo/
-greenkeeper.json
 *.tsbuildinfo
 
 npm-debug.log
-
