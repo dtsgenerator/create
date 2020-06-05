@@ -65,7 +65,7 @@ function checkTargetDirectory(name: string): string {
         process.exit(2);
     }
     fs.mkdirpSync(d);
-    console.log(`  The directory (${basename}) is created.`);
+    console.log(`Created the directory: ${basename}`);
     return d;
 }
 async function copyTemplateFiles(
