@@ -6,6 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "bin": {
+    "create": "./bin/create.js"
+  },
   "scripts": {
     "lint": "eslint src/*.ts",
     "lint:fix": "npm run lint -- --fix",
