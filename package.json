@@ -1,6 +1,6 @@
 {
   "name": "@dtsgenerator/create",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This repository is the create command for dtsgenerator plugin.",
   "main": "./bin/create.js",
   "publishConfig": {
