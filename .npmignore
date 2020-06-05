@@ -1,14 +1,8 @@
-!template/**/*.*
-
 .git/
 .vscode/
 
 # for npm
 node_modules/
-
-# codes
-/test/
-example/*/node_modules/
 
 # misc
 /.coveralls.yml
