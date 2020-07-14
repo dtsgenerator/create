@@ -6,6 +6,11 @@ import plugin from '..';
 
 import assert = require('assert');
 
+const splitStringByNewLine = (input: string): string[] => {
+    const splitted = input.match(/[^\r\n]+/g)
+    return splitted ? splitted : [];
+} 
+
 describe('PreProcess Snapshot testing', () => {
     const fixturesDir = path.join(__dirname, 'pre_snapshots');
     const inputFileName = 'input.json';
@@ -59,9 +64,9 @@ describe('PreProcess Snapshot testing', () => {
                 const expected = fs.readFileSync(expectedFilePath, {
                     encoding: 'utf-8',
                 });
-                assert.equal(
-                    actual,
-                    expected,
+                assert.deepEqual(
+                    splitStringByNewLine(actual),
+                    splitStringByNewLine(expected),
                     `
 ${fixtureDir}
 ${actual}
@@ -130,9 +135,9 @@ describe('PostProcess Snapshot testing', () => {
                 const expected = fs.readFileSync(expectedFilePath, {
                     encoding: 'utf-8',
                 });
-                assert.equal(
-                    actual,
-                    expected,
+                assert.deepEqual(
+                   splitStringByNewLine(actual),
+                   splitStringByNewLine(expected),
                     `
 ${fixtureDir}
 ${actual}
