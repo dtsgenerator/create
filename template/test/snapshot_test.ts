@@ -7,7 +7,7 @@ import plugin from '..';
 import assert = require('assert');
 
 const splitStringByNewLine = (input: string): string[] => {
-    const splitted = input.match(/[^\r\n]+/g)
+    const splitted = input.split(/\r?\n/);
     return splitted ? splitted : [];
 } 
 
