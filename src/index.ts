@@ -102,6 +102,7 @@ async function createPackageJson(
         description: 'PLEASE CHANGE THIS DESCRIPTION!!!',
         main: 'index.js',
         scripts: {
+            clean: 'rimraf index.js test/**/*.js *.tsbuildinfo',
             lint: 'eslint *.ts **/*.ts',
             'lint:fix': 'npm run lint -- --fix',
             precompile: 'npm run lint',
@@ -155,8 +156,8 @@ async function installDependencies(targetDir: string): Promise<void> {
         'mocha',
         'nyc',
         'prettier',
+        'rimraf',
         'ts-node',
-        'typescript',
     ];
 
     console.log('  Start to install dependencies from npm.');
