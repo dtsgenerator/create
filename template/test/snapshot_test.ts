@@ -8,7 +8,7 @@ import assert = require('assert');
 const splitStringByNewLine = (input: string): string[] => {
     const splitted = input.split(/\r?\n/);
     return splitted ? splitted : [];
-}
+};
 
 describe('PreProcess Snapshot testing', () => {
     const fixturesDir = path.join(__dirname, 'pre_snapshots');
@@ -137,8 +137,8 @@ describe('PostProcess Snapshot testing', () => {
                     encoding: 'utf-8',
                 });
                 assert.deepStrictEqual(
-                   splitStringByNewLine(actual),
-                   splitStringByNewLine(expected),
+                    splitStringByNewLine(actual),
+                    splitStringByNewLine(expected),
                     `
 ${fixtureDir}
 ${actual}
