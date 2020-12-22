@@ -142,14 +142,13 @@ function callCommand(command: string, args: string[]): Promise<void> {
 }
 async function installDependencies(targetDir: string): Promise<void> {
     const originalDir = process.cwd();
-    const dependencies = ['tslib'];
+    const dependencies = ['dtsgenerator', 'tslib'];
     const devDependencies = [
         '@types/mocha',
         '@types/node',
         '@typescript-eslint/eslint-plugin',
         '@typescript-eslint/parser',
         'cross-env',
-        'dtsgenerator',
         'eslint',
         'eslint-config-prettier',
         'eslint-plugin-prettier',
