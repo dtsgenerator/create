@@ -1,5 +1,5 @@
-import commander from 'commander';
-import fs from 'fs-extra';
+import * as commander from 'commander';
+import * as fs from 'fs-extra';
 import mustache from 'mustache';
 import path from 'path';
 import validate from 'validate-npm-package-name';
@@ -33,7 +33,7 @@ function addPrefix(name: string): string {
         process.exit(255);
     }
     const prefix = m.groups?.['prefix'];
-    const content = m.groups?.['content'] || '';
+    const content = m.groups?.['content'] ?? '';
     if (prefix != null && checkPrivateProject(prefix)) {
         return '@dtsgenerator/' + content;
     }
@@ -142,7 +142,7 @@ function callCommand(command: string, args: string[]): Promise<void> {
 }
 async function installDependencies(targetDir: string): Promise<void> {
     const originalDir = process.cwd();
-    const dependencies = ['dtsgenerator', 'tslib'];
+    const peerDependencies = ['dtsgenerator', 'tslib'];
     const devDependencies = [
         '@types/mocha',
         '@types/node',
@@ -151,7 +151,10 @@ async function installDependencies(targetDir: string): Promise<void> {
         'cross-env',
         'eslint',
         'eslint-config-prettier',
+        'eslint-import-resolver-typescript',
+        'eslint-plugin-import',
         'eslint-plugin-prettier',
+        'eslint-plugin-sort-imports-es6-autofix',
         'mocha',
         'nyc',
         'prettier',
@@ -164,13 +167,15 @@ async function installDependencies(targetDir: string): Promise<void> {
     try {
         await callCommand(
             'npm',
-            ['install', '--save', '--loglevel', 'error'].concat(dependencies)
+            ['install', '--save-peer', '--loglevel', 'error'].concat(
+                peerDependencies
+            )
         );
         await callCommand(
             'npm',
-            ['install', '--save-dev', '--loglevel', 'error'].concat(
-                devDependencies
-            )
+            ['install', '--save-dev', '--loglevel', 'error']
+                .concat(devDependencies)
+                .concat(peerDependencies)
         );
     } finally {
         process.chdir(originalDir);
