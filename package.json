@@ -11,9 +11,8 @@
   },
   "scripts": {
     "format": "prettier --write src/*.ts",
-    "lint": "eslint src/*.ts",
-    "lint:fix": "npm run lint -- --fix",
-    "fix": "npm run format && npm run lint:fix",
+    "lint": "eslint --fix src/*.ts",
+    "fix": "npm run format && npm run lint",
     "compile": "tsc -p .",
     "build": "npm run fix && npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1",

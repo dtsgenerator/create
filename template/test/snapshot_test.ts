@@ -8,7 +8,7 @@ import assert = require('assert');
 const splitStringByNewLine = (input: string): string[] => {
     const splitted = input.split(/\r?\n/);
     return splitted ? splitted : [];
-}
+};
 
 describe('PreProcess Snapshot testing', () => {
     const fixturesDir = path.join(__dirname, 'pre_snapshots');
@@ -34,7 +34,9 @@ describe('PreProcess Snapshot testing', () => {
                 const inputContent = fs.readFileSync(inputFilePath, {
                     encoding: 'utf-8',
                 });
-                const input = (JSON.parse(inputContent) as JsonSchema[]).map(c => parseSchema(c));
+                const input = (JSON.parse(
+                    inputContent
+                ) as JsonSchema[]).map((c) => parseSchema(c));
                 const option = fs.existsSync(configFilePath)
                     ? require(configFilePath)
                     : {};

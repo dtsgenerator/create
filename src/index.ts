@@ -89,6 +89,7 @@ async function copyTemplateFiles(
         await fs.unlink(p);
     }
 
+    console.log();
     console.log('  Finish to copy files.');
 }
 async function createPackageJson(
@@ -103,19 +104,22 @@ async function createPackageJson(
         main: 'index.js',
         scripts: {
             clean: 'rimraf index.js test/**/*.js *.tsbuildinfo',
-            lint: 'eslint *.ts **/*.ts',
-            'lint:fix': 'npm run lint -- --fix',
-            precompile: 'npm run lint',
+            format: 'prettier --write **/*.ts',
+            lint: 'eslint --fix *.ts **/*.ts',
+            fix: 'npm run format && npm run lint',
             compile: 'tsc -p .',
-            watch: 'npm run compile -- -w',
-            build: 'npm run compile',
+            build: 'npm run fix && npm run compile',
             'do-test':
                 'cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/*_test.ts',
             test: 'nyc npm run do-test',
             coverage: 'nyc report --reporter=text-lcov | coveralls',
             'test:update-snapshot': 'UPDATE_SNAPSHOT=1 npm run do-test',
+            prepare: 'husky install',
         },
         keywords: ['dtsgenerator', 'dtsgenerator-plugin'],
+        'lint-staged': {
+            '**/*.ts': ['prettier --write', 'eslint --fix'],
+        },
     };
     if (checkPrivateProject(name)) {
         json.publishConfig = {
@@ -155,6 +159,8 @@ async function installDependencies(targetDir: string): Promise<void> {
         'eslint-plugin-import',
         'eslint-plugin-prettier',
         'eslint-plugin-sort-imports-es6-autofix',
+        'husky',
+        'lint-staged',
         'mocha',
         'nyc',
         'prettier',
@@ -162,9 +168,13 @@ async function installDependencies(targetDir: string): Promise<void> {
         'ts-node',
     ];
 
-    console.log('  Start to install dependencies from npm.');
     process.chdir(targetDir);
     try {
+        console.log('  Start git init.');
+        await callCommand('git', ['init']);
+
+        console.log();
+        console.log('  Start to install dependencies from npm.');
         await callCommand(
             'npm',
             ['install', '--save-peer', '--loglevel', 'error'].concat(
@@ -177,6 +187,7 @@ async function installDependencies(targetDir: string): Promise<void> {
                 .concat(devDependencies)
                 .concat(peerDependencies)
         );
+        await callCommand('npx', ['husky', 'install']);
     } finally {
         process.chdir(originalDir);
     }
