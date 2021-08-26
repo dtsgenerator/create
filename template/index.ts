@@ -6,8 +6,13 @@ import {
     Schema,
 } from 'dtsgenerator';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const packageJson: {
+    name: string;
+    version: string;
+    description: string;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require('./package.json');
+} = require('./package.json');
 
 /**
  * This file is the main implementation for this plugin.

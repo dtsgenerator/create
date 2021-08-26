@@ -34,10 +34,13 @@ describe('PreProcess Snapshot testing', () => {
                 const inputContent = fs.readFileSync(inputFilePath, {
                     encoding: 'utf-8',
                 });
-                const input = (JSON.parse(
-                    inputContent
-                ) as JsonSchema[]).map((c) => parseSchema(c));
-                const option = fs.existsSync(configFilePath)
+                const input = (JSON.parse(inputContent) as JsonSchema[]).map(
+                    (c) => parseSchema(c)
+                );
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const option: PluginContext['option'] = fs.existsSync(
+                    configFilePath
+                )
                     ? require(configFilePath)
                     : {};
 
@@ -108,7 +111,10 @@ describe('PostProcess Snapshot testing', () => {
                     false,
                     ts.ScriptKind.TS
                 );
-                const option = fs.existsSync(configFilePath)
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const option: PluginContext['option'] = fs.existsSync(
+                    configFilePath
+                )
                     ? require(configFilePath)
                     : {};
 

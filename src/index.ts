@@ -7,15 +7,19 @@ import spawn from 'cross-spawn';
 
 let projectName: string | undefined;
 
-function parseArgs(): commander.Command {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const packageJson = require('../package.json');
+async function parseArgs(): Promise<commander.Command> {
+    const packageJsonPath = '../package.json';
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const packageJson: {
+        name: string;
+        version: string;
+    } = await import(packageJsonPath);
 
     return new commander.Command(packageJson.name)
         .version(packageJson.version)
         .arguments('<project-name>')
         .usage('<project-name> [options]')
-        .action((name) => {
+        .action((name: string) => {
             projectName = name;
         })
         .option('--verbose', 'print additional logs')
@@ -112,7 +116,7 @@ async function createPackageJson(
             'do-test':
                 'cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/*_test.ts',
             test: 'nyc npm run do-test',
-            coverage: 'nyc report --reporter=text-lcov | coveralls',
+            coverage: 'nyc report --reporter=lcov',
             'test:update-snapshot': 'UPDATE_SNAPSHOT=1 npm run do-test',
             prepare: 'husky install',
         },
@@ -122,6 +126,7 @@ async function createPackageJson(
         },
     };
     if (checkPrivateProject(name)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         json.publishConfig = {
             access: 'public',
         };
@@ -135,9 +140,7 @@ function callCommand(command: string, args: string[]): Promise<void> {
         const child = spawn(command, args, { stdio: 'inherit' });
         child.on('close', (code) => {
             if (code !== 0) {
-                reject({
-                    command: `${command} ${args.join(' ')}`,
-                });
+                reject(`${command} ${args.join(' ')}`);
                 return;
             }
             resolve();
@@ -148,17 +151,11 @@ async function installDependencies(targetDir: string): Promise<void> {
     const originalDir = process.cwd();
     const peerDependencies = ['dtsgenerator', 'tslib'];
     const devDependencies = [
+        '@dtsgenerator/eslint-config',
         '@types/mocha',
         '@types/node',
-        '@typescript-eslint/eslint-plugin',
-        '@typescript-eslint/parser',
         'cross-env',
         'eslint',
-        'eslint-config-prettier',
-        'eslint-import-resolver-typescript',
-        'eslint-plugin-import',
-        'eslint-plugin-prettier',
-        'eslint-plugin-sort-imports-es6-autofix',
         'husky',
         'lint-staged',
         'mocha',
@@ -188,6 +185,12 @@ async function installDependencies(targetDir: string): Promise<void> {
                 .concat(peerDependencies)
         );
         await callCommand('npx', ['husky', 'install']);
+        await callCommand('npx', [
+            'husky',
+            'add',
+            '.husky/pre-commit',
+            '"npx lint-staged"',
+        ]);
     } finally {
         process.chdir(originalDir);
     }
@@ -195,7 +198,7 @@ async function installDependencies(targetDir: string): Promise<void> {
 
 async function main(): Promise<void> {
     try {
-        const program = parseArgs();
+        const program = await parseArgs();
         // const verbose: boolean = program.verbose;
 
         if (projectName == null) {
@@ -215,10 +218,10 @@ async function main(): Promise<void> {
         console.log(
             `  Please open and edit ${path.relative('.', targetDir)}/index.ts.`
         );
-    } catch (reason) {
+    } catch (reason: unknown) {
         console.log();
-        if (reason.command) {
-            console.log(`  ${reason.command} has failed.`);
+        if (typeof reason === 'string') {
+            console.log(`  '${reason}' has failed.`);
         } else {
             console.log('  Unexpected error.');
             console.log(reason);
@@ -226,4 +229,4 @@ async function main(): Promise<void> {
         console.log();
     }
 }
-main();
+void main();

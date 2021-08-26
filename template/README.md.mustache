@@ -77,6 +77,7 @@ npm test
 - `test/snapshot_test.ts`: test main file. should not edit this file.
 - `test/post_snapshots/`: post process test patterns. Please add folder if you need.
 - `test/pre_snapshots/`: pre process test patterns. Please add folder if you need.
+- `.github/workflows/`: Github Action's workflow files for CI and automatic release (need to set up the secrets).
 
 ## npm scripts
 
@@ -88,7 +89,14 @@ npm test
 
 ### sub scripts
 
-- `npm run watch`: watch editing files for compile.
-- `npm run lint:fix`: fix lint error automatically.
-- `npm run test:update-snapshot`: update snapshot files for unit test.
-- `npm run coverage`: report to [coveralls](https://coveralls.io/). Need coveralls configuration file.
+- `npm run fix`: fix lint error and format source files.
+- `npm run compile`: do transpile by TypeScript only.
+- `npm run test:update-snapshot`: update snapshot files for unit tests.
+- `npm run coverage`: output coverage report file.
+
+## Github Actions
+
+- CI: The unit tests will be run automatically.
+- Release: When you push a tag, it will automatically publish this plugin to npm.
+    - However, you need to set the [npm](https://www.npmjs.com/)'s access token for publishing to npm as `NPM_TOKEN` in the project configuration in advance.
+    - If you don't need it, delete the workflow file.
