@@ -32,25 +32,25 @@
   },
   "homepage": "https://github.com/dtsgenerator/create#readme",
   "dependencies": {
-    "commander": "^8.1.0",
+    "commander": "^9.1.0",
     "cross-spawn": "^7.0.3",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.0.1",
     "mustache": "^4.2.0",
     "tslib": "^2.3.1",
-    "validate-npm-package-name": "^3.0.0"
+    "validate-npm-package-name": "^4.0.0"
   },
   "devDependencies": {
-    "@dtsgenerator/eslint-config": "^0.2.0",
+    "@dtsgenerator/eslint-config": "^0.6.0",
     "@types/cross-spawn": "^6.0.2",
-    "@types/fs-extra": "^9.0.12",
+    "@types/fs-extra": "^9.0.13",
     "@types/mustache": "^4.1.2",
     "@types/node": "^16.7.2",
     "@types/validate-npm-package-name": "^3.0.3",
-    "eslint": "^7.32.0",
-    "husky": "^7.0.2",
-    "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2",
-    "typescript": "^4.3.5"
+    "eslint": "^8.12.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.7",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3"
   },
   "lint-staged": {
     "src/*.ts": [

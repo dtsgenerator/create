@@ -1,9 +1,9 @@
+import path from 'path';
 import * as commander from 'commander';
+import spawn from 'cross-spawn';
 import * as fs from 'fs-extra';
 import mustache from 'mustache';
-import path from 'path';
 import validate from 'validate-npm-package-name';
-import spawn from 'cross-spawn';
 
 let projectName: string | undefined;
 
@@ -27,7 +27,7 @@ async function parseArgs(): Promise<commander.Command> {
 }
 
 function checkPrivateProject(name: string): boolean {
-    return name[0] === '@';
+    return name.startsWith('@');
 }
 
 function addPrefix(name: string): string {
