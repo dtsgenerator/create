@@ -36,8 +36,8 @@ function addPrefix(name: string): string {
         console.log('What!?');
         process.exit(255);
     }
-    const prefix = m.groups?.['prefix'];
-    const content = m.groups?.['content'] ?? '';
+    const prefix = m.groups?.prefix;
+    const content = m.groups?.content ?? '';
     if (prefix != null && checkPrivateProject(prefix)) {
         return '@dtsgenerator/' + content;
     }
@@ -74,11 +74,11 @@ function checkTargetDirectory(name: string): string {
 }
 async function copyTemplateFiles(
     projectName: string,
-    targetDir: string
+    targetDir: string,
 ): Promise<void> {
     await fs.copy(
         path.resolve(path.join(__dirname, '../template/')),
-        targetDir
+        targetDir,
     );
 
     const view = { projectName };
@@ -98,7 +98,7 @@ async function copyTemplateFiles(
 }
 async function createPackageJson(
     name: string,
-    targetDir: string
+    targetDir: string,
 ): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const json: any = {
@@ -175,14 +175,14 @@ async function installDependencies(targetDir: string): Promise<void> {
         await callCommand(
             'npm',
             ['install', '--save-peer', '--loglevel', 'error'].concat(
-                peerDependencies
-            )
+                peerDependencies,
+            ),
         );
         await callCommand(
             'npm',
             ['install', '--save-dev', '--loglevel', 'error']
                 .concat(devDependencies)
-                .concat(peerDependencies)
+                .concat(peerDependencies),
         );
         await callCommand('npx', ['husky', 'install']);
         await callCommand('npx', [
@@ -216,7 +216,7 @@ async function main(): Promise<void> {
 
         console.log('Finish to create project.');
         console.log(
-            `  Please open and edit ${path.relative('.', targetDir)}/index.ts.`
+            `  Please open and edit ${path.relative('.', targetDir)}/index.ts.`,
         );
     } catch (reason: unknown) {
         console.log();
