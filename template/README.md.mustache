@@ -77,7 +77,7 @@ npm test
 - `test/snapshot_test.ts`: test main file. should not edit this file.
 - `test/post_snapshots/`: post process test patterns. Please add folder if you need.
 - `test/pre_snapshots/`: pre process test patterns. Please add folder if you need.
-- `.github/workflows/`: Github Action's workflow files for CI and automatic release (need to set up the secrets).
+- `.github/workflows/`: GitHub Actions workflow files for CI and automatic release.
 
 ## npm scripts
 
@@ -98,5 +98,8 @@ npm test
 
 - CI: The unit tests will be run automatically.
 - Release: When you push a tag, it will automatically publish this plugin to npm.
-    - However, you need to set the [npm](https://www.npmjs.com/)'s access token for publishing to npm as `NPM_TOKEN` in the project configuration in advance.
+    - For a new package, first sign in to npm locally, run `npm run build` and `npm test`, then publish it once with `npm publish --ignore-scripts`.
+    - In the package's npm settings, add a GitHub Actions trusted publisher. Use the generated repository's actual GitHub owner and repository name, set the workflow filename to `workflow-release.yaml`, and leave Environment blank.
+    - Explicitly enable `Allow direct npm publish`; new trusted publisher settings default to stage publishing.
+    - No npm token or GitHub Actions secret is required for subsequent releases. The release workflow uses npm trusted publishing (OIDC).
     - If you don't need it, delete the workflow file.

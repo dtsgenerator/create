@@ -3,6 +3,9 @@
   "version": "1.9.0",
   "description": "This repository is the create command for dtsgenerator plugin.",
   "main": "./bin/create.js",
+  "engines": {
+    "node": "^22.22.2 || >=24.15.0"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -10,13 +13,15 @@
     "create": "./bin/create.js"
   },
   "scripts": {
-    "format": "prettier --write src/*.ts",
-    "lint": "eslint --fix src/*.ts",
-    "fix": "npm run format && npm run lint",
+    "format": "prettier --check src/*.ts test/*.js",
+    "format:fix": "prettier --write src/*.ts test/*.js",
+    "lint": "eslint src/*.ts",
+    "lint:fix": "eslint --fix src/*.ts",
+    "fix": "npm run format:fix && npm run lint:fix",
     "compile": "tsc -p .",
-    "build": "npm run fix && npm run compile",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
+    "build": "npm run compile",
+    "test": "npm run compile && node --test test/*.test.js",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -32,25 +37,25 @@
   },
   "homepage": "https://github.com/dtsgenerator/create#readme",
   "dependencies": {
-    "commander": "^12.1.0",
-    "cross-spawn": "^7.0.3",
-    "fs-extra": "^11.2.0",
+    "commander": "^15.0.0",
+    "cross-spawn": "^7.0.6",
+    "fs-extra": "^11.4.0",
     "mustache": "^4.2.0",
-    "tslib": "^2.6.3",
-    "validate-npm-package-name": "^5.0.1"
+    "tslib": "^2.8.1",
+    "validate-npm-package-name": "^8.0.0"
   },
   "devDependencies": {
-    "@dtsgenerator/eslint-config": "^0.7.2",
+    "@dtsgenerator/eslint-config": "^1.0.0",
     "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
-    "@types/mustache": "^4.2.5",
-    "@types/node": "^18.19.36",
+    "@types/mustache": "^4.2.6",
+    "@types/node": "^22.20.1",
     "@types/validate-npm-package-name": "^4.0.2",
-    "eslint": "^8.57.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.7",
-    "prettier": "^3.3.2",
-    "typescript": "^5.4.5"
+    "eslint": "^10.10.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.0",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3"
   },
   "lint-staged": {
     "src/*.ts": [
