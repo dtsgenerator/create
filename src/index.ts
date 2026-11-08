@@ -1,21 +1,19 @@
 import path from 'path';
-import * as commander from 'commander';
 import spawn from 'cross-spawn';
 import * as fs from 'fs-extra';
 import mustache from 'mustache';
-import validate from 'validate-npm-package-name';
 
 let projectName: string | undefined;
 
-async function parseArgs(): Promise<commander.Command> {
-    const packageJsonPath = '../package.json';
+async function parseArgs() {
+    const { Command } = await import('commander');
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const packageJson: {
         name: string;
         version: string;
-    } = await import(packageJsonPath);
+    } = await fs.readJson(path.resolve(__dirname, '../package.json'));
 
-    return new commander.Command(packageJson.name)
+    return new Command(packageJson.name)
         .version(packageJson.version)
         .arguments('<project-name>')
         .usage('<project-name> [options]')
@@ -23,6 +21,7 @@ async function parseArgs(): Promise<commander.Command> {
             projectName = name;
         })
         .option('--verbose', 'print additional logs')
+        .allowExcessArguments()
         .parse(process.argv);
 }
 
@@ -43,7 +42,8 @@ function addPrefix(name: string): string {
     }
     return 'dtsgenerator-' + content;
 }
-function checkProjectName(name: string): string {
+async function checkProjectName(name: string): Promise<string> {
+    const { default: validate } = await import('validate-npm-package-name');
     const result = validate(name);
     if (!result.validForNewPackages) {
         console.log();
@@ -100,33 +100,59 @@ async function createPackageJson(
     name: string,
     targetDir: string,
 ): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const json: any = {
+    const dtsgeneratorSpec = '^4.0.0';
+    const eslintConfigSpec = '^1.0.0';
+    const json: Record<string, unknown> = {
         name,
         version: '0.1.0',
         description: 'PLEASE CHANGE THIS DESCRIPTION!!!',
         main: 'index.js',
         scripts: {
             clean: 'rimraf index.js test/**/*.js *.tsbuildinfo',
-            format: 'prettier --write **/*.ts',
-            lint: 'eslint --fix *.ts **/*.ts',
-            fix: 'npm run format && npm run lint',
+            format: "prettier --check 'index.ts' 'test/*.ts'",
+            'format:fix': "prettier --write 'index.ts' 'test/*.ts'",
+            lint: "eslint 'index.ts' 'test/*.ts'",
+            'lint:fix': "eslint --fix 'index.ts' 'test/*.ts'",
+            fix: 'npm run format:fix && npm run lint:fix',
             compile: 'tsc -p .',
-            build: 'npm run fix && npm run compile',
+            build: 'npm run compile',
             'do-test':
                 'cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/*_test.ts',
             test: 'nyc npm run do-test',
             coverage: 'nyc report --reporter=lcov',
             'test:update-snapshot': 'UPDATE_SNAPSHOT=1 npm run do-test',
-            prepare: 'husky install',
+            prepare: 'husky',
         },
         keywords: ['dtsgenerator', 'dtsgenerator-plugin'],
+        engines: {
+            node: '^22.22.2 || >=24.15.0',
+        },
+        peerDependencies: {
+            dtsgenerator: dtsgeneratorSpec,
+            tslib: '^2.8.1',
+        },
+        devDependencies: {
+            '@dtsgenerator/eslint-config': eslintConfigSpec,
+            '@types/mocha': '^10.0.10',
+            '@types/node': '^22.20.1',
+            'cross-env': '^10.1.0',
+            dtsgenerator: dtsgeneratorSpec,
+            eslint: '^10.10.0',
+            husky: '^9.1.7',
+            'lint-staged': '^17.5.0',
+            mocha: '^12.0.0',
+            nyc: '^18.0.0',
+            prettier: '^3.9.6',
+            rimraf: '^6.1.3',
+            'ts-node': '^10.9.2',
+            tslib: '^2.8.1',
+            typescript: '^6.0.3',
+        },
         'lint-staged': {
             '**/*.ts': ['prettier --write', 'eslint --fix'],
         },
     };
     if (checkPrivateProject(name)) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         json.publishConfig = {
             access: 'public',
         };
@@ -149,22 +175,6 @@ function callCommand(command: string, args: string[]): Promise<void> {
 }
 async function installDependencies(targetDir: string): Promise<void> {
     const originalDir = process.cwd();
-    const peerDependencies = ['dtsgenerator', 'tslib'];
-    const devDependencies = [
-        '@dtsgenerator/eslint-config',
-        '@types/mocha',
-        '@types/node',
-        'cross-env',
-        'eslint',
-        'husky',
-        'lint-staged',
-        'mocha',
-        'nyc',
-        'prettier',
-        'rimraf',
-        'ts-node',
-    ];
-
     process.chdir(targetDir);
     try {
         console.log('  Start git init.');
@@ -172,25 +182,7 @@ async function installDependencies(targetDir: string): Promise<void> {
 
         console.log();
         console.log('  Start to install dependencies from npm.');
-        await callCommand(
-            'npm',
-            ['install', '--save-peer', '--loglevel', 'error'].concat(
-                peerDependencies,
-            ),
-        );
-        await callCommand(
-            'npm',
-            ['install', '--save-dev', '--loglevel', 'error']
-                .concat(devDependencies)
-                .concat(peerDependencies),
-        );
-        await callCommand('npx', ['husky', 'install']);
-        await callCommand('npx', [
-            'husky',
-            'add',
-            '.husky/pre-commit',
-            '"npx lint-staged"',
-        ]);
+        await callCommand('npm', ['install', '--loglevel', 'error']);
     } finally {
         process.chdir(originalDir);
     }
@@ -206,7 +198,7 @@ async function main(): Promise<void> {
             console.log(program.helpInformation());
             process.exit(1);
         }
-        projectName = checkProjectName(addPrefix(projectName));
+        projectName = await checkProjectName(addPrefix(projectName));
         console.log('Start to create project: ' + projectName);
 
         const targetDir = checkTargetDirectory(projectName);

@@ -1,13 +1,12 @@
+import assert = require('assert');
+
 import fs from 'fs';
 import path from 'path';
 import { ts, PluginContext, parseSchema, JsonSchema } from 'dtsgenerator';
 import plugin from '..';
 
-import assert = require('assert');
-
 const splitStringByNewLine = (input: string): string[] => {
-    const splitted = input.split(/\r?\n/);
-    return splitted ? splitted : [];
+    return input.split(/\r?\n/);
 };
 
 describe('PreProcess Snapshot testing', () => {
@@ -28,18 +27,17 @@ describe('PreProcess Snapshot testing', () => {
                 const configFilePath = path.join(fixtureDir, configFileName);
                 const expectedFilePath = path.join(
                     fixtureDir,
-                    expectedFileName
+                    expectedFileName,
                 );
 
                 const inputContent = fs.readFileSync(inputFilePath, {
                     encoding: 'utf-8',
                 });
                 const input = (JSON.parse(inputContent) as JsonSchema[]).map(
-                    (c) => parseSchema(c)
+                    (c) => parseSchema(c),
                 );
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const option: PluginContext['option'] = fs.existsSync(
-                    configFilePath
+                    configFilePath,
                 )
                     ? require(configFilePath)
                     : {};
@@ -74,7 +72,7 @@ describe('PreProcess Snapshot testing', () => {
                     `
 ${fixtureDir}
 ${actual}
-`
+`,
                 );
             });
         });
@@ -98,7 +96,7 @@ describe('PostProcess Snapshot testing', () => {
                 const configFilePath = path.join(fixtureDir, configFileName);
                 const expectedFilePath = path.join(
                     fixtureDir,
-                    expectedFileName
+                    expectedFileName,
                 );
 
                 const inputContent = fs.readFileSync(inputFilePath, {
@@ -109,11 +107,10 @@ describe('PostProcess Snapshot testing', () => {
                     inputContent,
                     ts.ScriptTarget.Latest,
                     false,
-                    ts.ScriptKind.TS
+                    ts.ScriptKind.TS,
                 );
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const option: PluginContext['option'] = fs.existsSync(
-                    configFilePath
+                    configFilePath,
                 )
                     ? require(configFilePath)
                     : {};
@@ -150,7 +147,7 @@ describe('PostProcess Snapshot testing', () => {
                     `
 ${fixtureDir}
 ${actual}
-`
+`,
                 );
             });
         });

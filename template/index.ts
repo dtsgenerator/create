@@ -11,7 +11,7 @@ const packageJson: {
     name: string;
     version: string;
     description: string;
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
 } = require('./package.json');
 
 /**
@@ -33,11 +33,11 @@ const plugin: Plugin = {
  * This `preProcess` is the hook for the input schema changing.
  */
 async function preProcess(
-    pluginContext: PluginContext
+    pluginContext: PluginContext,
 ): Promise<PreProcessHandler | undefined> {
     return (contents: Schema[]): Schema[] => {
         console.log(
-            `PreProcess: config=<${JSON.stringify(pluginContext.option)}>`
+            `PreProcess: config=<${JSON.stringify(pluginContext.option)}>`,
         );
         return contents;
     };
@@ -47,16 +47,15 @@ async function preProcess(
  * This `postProcess` is the hook for the output AST changing.
  */
 async function postProcess(
-    pluginContext: PluginContext
+    pluginContext: PluginContext,
 ): Promise<ts.TransformerFactory<ts.SourceFile> | undefined> {
-    return (_: ts.TransformationContext) => (
-        root: ts.SourceFile
-    ): ts.SourceFile => {
-        console.log(
-            `PostProcess: config=<${JSON.stringify(pluginContext.option)}>`
-        );
-        return root;
-    };
+    return (_: ts.TransformationContext) =>
+        (root: ts.SourceFile): ts.SourceFile => {
+            console.log(
+                `PostProcess: config=<${JSON.stringify(pluginContext.option)}>`,
+            );
+            return root;
+        };
 }
 
 export default plugin;
