@@ -100,7 +100,7 @@ async function createPackageJson(
     name: string,
     targetDir: string,
 ): Promise<void> {
-    const dtsgeneratorSpec = '^3.19.2';
+    const dtsgeneratorSpec = '^4.0.0';
     const eslintConfigSpec = '^1.0.0';
     const json: Record<string, unknown> = {
         name,

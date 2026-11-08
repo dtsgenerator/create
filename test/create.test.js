@@ -95,7 +95,7 @@ test('creates the default prefixed project with pinned compatible dependencies',
         );
         assert.equal(packageJson.name, 'dtsgenerator-sample');
         assert.equal(packageJson.engines.node, '^22.22.2 || >=24.15.0');
-        assert.equal(packageJson.peerDependencies.dtsgenerator, '^3.19.2');
+        assert.equal(packageJson.peerDependencies.dtsgenerator, '^4.0.0');
         assert.equal(packageJson.devDependencies.typescript, '^6.0.3');
         assert.equal(
             packageJson.devDependencies['@dtsgenerator/eslint-config'],
